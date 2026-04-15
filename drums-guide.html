@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drums Guide — TD-17KV</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a; --surface: #111111; --surface2: #1a1a1a; --border: #222222;
+    --accent: #e8ff47; --accent2: #ff4757; --accent3: #47b8ff;
+    --text: #e8e8e8; --muted: #666666; --funk: #ff9f43; --drum: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; padding: 40px 24px; position: relative; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse 60% 40% at 80% 10%, rgba(167,139,250,0.04) 0%, transparent 60%), radial-gradient(ellipse 40% 30% at 10% 80%, rgba(71,184,255,0.04) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  .container { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 48px; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; }
+  .header-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(56px, 8vw, 96px); line-height: 0.9; letter-spacing: 0.02em; }
+  h1 span { color: var(--drum); }
+  .header-meta { text-align: right; }
+  .badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px; font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 8px; display: inline-block; }
+  .badge span { color: var(--drum); }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 16px; }
+  .card-sm { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .card-grid { display: grid; gap: 16px; margin-bottom: 48px; }
+  .card-grid.cols2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+  .hw-note { background: var(--surface); border: 1px solid rgba(71,184,255,0.2); border-radius: 8px; padding: 20px 24px; margin-bottom: 16px; display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
+  .hw-note.warn { border-color: rgba(255,71,87,0.3); }
+  .hw-note.yellow { border-color: rgba(232,255,71,0.2); }
+  .hw-note.orange { border-color: rgba(255,159,67,0.2); }
+  .hw-icon { font-size: 28px; line-height: 1; }
+  .hw-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.05em; color: var(--accent3); margin-bottom: 6px; }
+  .hw-title.warn { color: var(--accent2); }
+  .hw-title.yellow { color: var(--accent); }
+  .hw-title.orange { color: var(--funk); }
+  .hw-title.purple { color: var(--drum); }
+  .hw-text { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .hw-text strong { color: var(--text); font-weight: 500; }
+  .data-block { background: var(--surface2); border-radius: 4px; padding: 12px; margin-bottom: 12px; }
+  .data-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; }
+  .data-row:not(:last-child) { border-bottom: 1px solid var(--border); margin-bottom: 4px; padding-bottom: 9px; }
+  .data-label { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .data-value { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--drum); }
+  .data-value.yellow { color: var(--accent); }
+  .data-value.red { color: var(--accent2); }
+  .note-box { background: rgba(167,139,250,0.03); border: 1px solid rgba(167,139,250,0.12); border-radius: 4px; padding: 12px 14px; margin-top: 12px; }
+  .note-box p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .note-box strong { color: var(--drum); font-weight: 500; }
+  .note-box.yellow { background: rgba(232,255,71,0.03); border-color: rgba(232,255,71,0.1); }
+  .note-box.yellow strong { color: var(--accent); }
+  .coach-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; animation: fadeUp 0.4s ease both; }
+  .coach-card:hover { border-color: #2a2a2a; }
+  .coach-card:nth-child(1) { animation-delay: 0.05s; }
+  .coach-card:nth-child(2) { animation-delay: 0.1s; }
+  .coach-card:nth-child(3) { animation-delay: 0.15s; }
+  .coach-header { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 14px 18px; cursor: pointer; user-select: none; }
+  .coach-num { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--muted); line-height: 1; min-width: 28px; }
+  .coach-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.05em; line-height: 1; margin-bottom: 3px; }
+  .coach-sub { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.3s; }
+  .coach-card.open .chevron { transform: rotate(180deg); }
+  .coach-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+  .coach-card.open .coach-body { display: block; }
+  .coach-body-inner { padding-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .tuning-table { width: 100%; border-collapse: collapse; font-family: 'DM Mono', monospace; font-size: 10px; margin-top: 12px; }
+  .tuning-table th { text-align: left; color: var(--muted); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .tuning-table td { padding: 8px 10px; border-bottom: 1px solid rgba(34,34,34,0.5); color: var(--text); font-size: 10px; }
+  .tuning-table tr:last-child td { border-bottom: none; }
+  .tuning-table td:first-child { color: var(--drum); }
+  .fx-tag { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 2px; margin: 2px; text-transform: uppercase; }
+  .fx-tag.best { background: rgba(232,255,71,0.12); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); }
+  .fx-tag.delay { background: rgba(167,139,250,0.12); color: var(--drum); border: 1px solid rgba(167,139,250,0.2); }
+  .fx-tag.dist { background: rgba(255,71,87,0.12); color: var(--accent2); border: 1px solid rgba(255,71,87,0.2); }
+  .fx-tag.mod { background: rgba(255,159,67,0.12); color: var(--funk); border: 1px solid rgba(255,159,67,0.2); }
+  .step-list { counter-reset: steps; list-style: none; margin-top: 12px; }
+  .step-list li { counter-increment: steps; display: grid; grid-template-columns: 24px 1fr; gap: 10px; padding: 6px 0; font-size: 12px; color: var(--muted); line-height: 1.5; border-bottom: 1px solid rgba(34,34,34,0.5); }
+  .step-list li:last-child { border-bottom: none; }
+  .step-list li::before { content: counter(steps); font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--drum); line-height: 1.2; }
+  .step-list li strong { color: var(--text); font-weight: 500; }
+  .footer { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; margin-top: 48px; }
+  .footer-text { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 640px) {
+    .card-grid.cols2, .card-grid.cols3 { grid-template-columns: 1fr; }
+    .coach-body-inner { grid-template-columns: 1fr; }
+    .header { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div>
+      <div class="header-label">Optimization & Practice Guide</div>
+      <h1>DRUMS<br><span>TD-17KV</span></h1>
+    </div>
+    <div class="header-meta">
+      <div class="badge">KIT <span>Roland TD-17KV</span></div><br>
+      <div class="badge">IEM <span>KZ ZS10 Pro (wired)</span></div><br>
+      <div class="badge">AUDIO <span>Bluetooth backing track</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Signal Chain & Setup</div>
+  <div class="hw-note orange" style="margin-bottom:16px;">
+    <div class="hw-icon">🥁</div>
+    <div>
+      <div class="hw-title orange">Signal Chain</div>
+      <div class="hw-text"><strong>IEMs:</strong> KZ ZS10 Pro (wired) → TD-17KV phones jack &nbsp;·&nbsp; <strong>Backing Track:</strong> Bluetooth from mobile device → TD-17KV &nbsp;·&nbsp; <strong>Kits:</strong> Third-party rock backups loaded via SD card (OTHER → SAVE/LOAD)</div>
+    </div>
+  </div>
+
+  <div class="hw-note warn" style="margin-bottom:48px;">
+    <div class="hw-icon">⚠️</div>
+    <div>
+      <div class="hw-title warn">Auto Off — Disable This First</div>
+      <div class="hw-text">The TD-17KV ships with Auto Off enabled. It will cut power mid-session after inactivity. <strong>Disable it immediately:</strong> SETUP → AUTO OFF → set to <strong>OFF</strong> (or 4 HOURS minimum). Especially dangerous when you step away briefly while Bluetooth music is still playing — the module shuts down and you lose your kit settings.</div>
+    </div>
+  </div>
+
+  <div class="section-label">KZ ZS10 Pro — IEM Optimization</div>
+  <div class="hw-note yellow" style="margin-bottom:16px;">
+    <div class="hw-icon">🎧</div>
+    <div>
+      <div class="hw-title yellow">KZ ZS10 Pro Frequency Profile</div>
+      <div class="hw-text">V-shaped response — elevated bass, recessed mids, hyped treble above 8kHz. <strong>Kick and floor tom will sound boomy</strong> without global bass correction. <strong>Snare mids will feel thin</strong> without per-pad boost. <strong>Cymbals may fatigue</strong> without treble rollback. Always optimize while playing along to a Bluetooth track — not in silence.</div>
+    </div>
+  </div>
+
+  <div class="card-grid cols2" style="margin-bottom:16px;">
+    <div class="card-sm">
+      <div class="section-title">Global EQ — SETUP → Bass/Treble</div>
+      <div class="data-block">
+        <div class="data-row"><span class="data-label">Bass Knob</span><span class="data-value yellow">~40% (cut)</span></div>
+        <div class="data-row"><span class="data-label">Treble Knob</span><span class="data-value yellow">~45% (cut)</span></div>
+        <div class="data-row"><span class="data-label">Bass Type</span><span class="data-value">SHELV</span></div>
+        <div class="data-row"><span class="data-label">Treble Type</span><span class="data-value">SHELV</span></div>
+      </div>
+      <div class="note-box yellow"><p>Applies across all kits globally. Compensates for ZS10 Pro bass bloom and 8kHz+ treble peak. Set once, leave it.</p></div>
+    </div>
+    <div class="card-sm">
+      <div class="section-title">Ambience — OTHER → AMBIENCE</div>
+      <div class="data-block">
+        <div class="data-row"><span class="data-label">Type</span><span class="data-value">Room 2 or Studio</span></div>
+        <div class="data-row"><span class="data-label">Size</span><span class="data-value">Small to Medium</span></div>
+        <div class="data-row"><span class="data-label">Level</span><span class="data-value">20–30%</span></div>
+      </div>
+      <div class="note-box yellow"><p>Avoid Hall or Arena when playing along to Bluetooth music — creates disconnect between dry track and roomy drums in the IEM seal.</p></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:48px;">
+    <div class="section-title">Per-Pad EQ — OTHER → PAD EQ</div>
+    <div class="card-grid cols3" style="margin-bottom:12px;">
+      <div class="data-block" style="margin-bottom:0;">
+        <div class="data-row"><span class="data-label">Pad</span><span class="data-value red">Kick</span></div>
+        <div class="data-row"><span class="data-label">Action</span><span class="data-value">Low cut ~80Hz</span></div>
+        <div class="data-row"><span class="data-label">Why</span><span class="data-label" style="text-align:right;max-width:160px;">ZS10 Pro bass bloom makes kick undefined</span></div>
+      </div>
+      <div class="data-block" style="margin-bottom:0;">
+        <div class="data-row"><span class="data-label">Pad</span><span class="data-value">Snare</span></div>
+        <div class="data-row"><span class="data-label">Action</span><span class="data-value">Mid boost 200–300Hz</span></div>
+        <div class="data-row"><span class="data-label">Why</span><span class="data-label" style="text-align:right;max-width:160px;">Recessed mids make snare sound thin</span></div>
+      </div>
+      <div class="data-block" style="margin-bottom:0;">
+        <div class="data-row"><span class="data-label">Pad</span><span class="data-value">Cymbals</span></div>
+        <div class="data-row"><span class="data-label">Action</span><span class="data-value">High cut above 8kHz</span></div>
+        <div class="data-row"><span class="data-label">Why</span><span class="data-label" style="text-align:right;max-width:160px;">ZS10 Pro treble peak causes cymbal fatigue</span></div>
+      </div>
+    </div>
+    <div class="note-box yellow"><p><strong>Workflow:</strong> Load each kit → play along to a familiar song via Bluetooth for 5 minutes → then adjust. What sounds right in silence often sounds wrong in context.</p></div>
+  </div>
+
+  <div class="section-label">Tuning & Muffling — Rock Reference</div>
+  <div class="card" style="margin-bottom:48px;">
+    <div class="section-title">Press [TUNING] or [MUFFLING] → strike pad to select → dial to adjust</div>
+    <table class="tuning-table">
+      <thead><tr><th>Pad</th><th>Tuning (Head)</th><th>Muffling</th><th>Rock Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Kick</td><td>Medium-Low (–2 to –4)</td><td>Medium-High</td><td>Deep thud, not boomy. Heavy muffling tightens attack for fast double patterns.</td></tr>
+        <tr><td>Snare (Head)</td><td>Medium (0)</td><td>Low-Medium</td><td>Center pitch for rock. Too high sounds thin through IEMs. Keep some ring for crack.</td></tr>
+        <tr><td>Snare (Rim)</td><td>Follows head</td><td>N/A</td><td>Cross stick tone is separate — assign instrument via ASSIGN if too clicky.</td></tr>
+        <tr><td>Hi-Hat</td><td>N/A</td><td>N/A</td><td>Open/close feel controlled by FD-9 pedal tension, not tuning.</td></tr>
+        <tr><td>Tom 1 (High)</td><td>Medium (0 to +1)</td><td>Low</td><td>Slightly higher than floor tom for pitch contrast. Keep ring for fill presence.</td></tr>
+        <tr><td>Tom 2 (Mid)</td><td>Low-Medium (–1 to –2)</td><td>Low</td><td>Mid-range pitch. Depth in fills without muddying kick.</td></tr>
+        <tr><td>Floor Tom</td><td>Low (–3 to –5)</td><td>Low-Medium</td><td>Deep and full. Don't go too low — IEMs will boom without pad EQ correction.</td></tr>
+        <tr><td>Crash</td><td>N/A</td><td>N/A</td><td>Choke play (grab edge after hit) on CY pads — use for tight crashes in rock.</td></tr>
+        <tr><td>Ride</td><td>N/A</td><td>N/A</td><td>Bell shot available — shoulder of stick on bell area for ride bell sound.</td></tr>
+      </tbody>
+    </table>
+    <div class="note-box" style="margin-top:12px;"><p><strong>Note:</strong> Third-party kit backup files override tuning and muffling when loaded. Always re-check these settings after loading a new kit from SD card.</p></div>
+  </div>
+
+  <div class="section-label">Multi-Effect Quick Reference — OTHER → MULTI FX</div>
+  <div class="card" style="margin-bottom:48px;">
+    <div class="section-title">30 types available · Applied per kit · Most useful for rock:</div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">COMP (Compressor)</span><span class="fx-tag best">Recommended</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Evens out velocity differences. Essential for recording or playing with a mix. Set threshold medium, ratio medium. Start here with every new kit.</span></div>
+        </div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">OD+DELAY</span><span class="fx-tag dist">Specialty</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Adds grit and room tail simultaneously. Useful for heavier rock kits that need edge without separate effects.</span></div>
+        </div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">CHORUS</span><span class="fx-tag mod">Modulation</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Adds width and depth. Works well at low levels for a fuller sound through IEMs. Don't overdo or timing feels loose.</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">DELAY</span><span class="fx-tag delay">Delay</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Adds space and sustain. Keep level low (10–15%) for rock. Too much muddies fast patterns. Better at slower tempos.</span></div>
+        </div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">TAPE ECHO</span><span class="fx-tag delay">Delay</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Warmer than clean delay. Mimics vintage tape saturation. Good on snare for 70s-era rock room sound.</span></div>
+        </div>
+        <div class="data-block">
+          <div class="data-row"><span class="data-label">3TAP PAN DELAY</span><span class="fx-tag delay">Delay</span></div>
+          <div class="data-row" style="border:none;padding-top:2px;"><span class="data-label" style="color:var(--muted);font-size:9px;line-height:1.5;">Three taps panning left/right. Dramatic through IEMs — adds stereo width. More useful for practice than live feel.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note-box"><p><strong>For rock:</strong> Start with COMP at medium settings on every new kit before touching anything else. Most impactful single adjustment for consistency through IEMs.</p></div>
+  </div>
+
+  <div class="section-label">Coach Mode — Practice Reference</div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:48px;">
+    <div class="coach-card" onclick="toggleCoach(this)">
+      <div class="coach-header">
+        <div class="coach-num">01</div>
+        <div><div class="coach-title">TIME CHECK</div><div class="coach-sub">Timing accuracy against the click · Press [COACH] → F1</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="coach-body">
+        <div class="coach-body-inner">
+          <div>
+            <div class="section-title">Recommended Settings</div>
+            <div class="data-block">
+              <div class="data-row"><span class="data-label">Score</span><span class="data-value">ON — 8 measures</span></div>
+              <div class="data-row"><span class="data-label">Grade</span><span class="data-value">EASY → HARD when consistent</span></div>
+              <div class="data-row"><span class="data-label">Display 1</span><span class="data-value">SNARE</span></div>
+              <div class="data-row"><span class="data-label">Display 2</span><span class="data-value">KICK</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">How to use it</div>
+            <div class="note-box"><p>Best used at the start of a session. Play basic kick/snare in time with the click. Screen shows BEHIND or AHEAD in real time. Target 90%+ before moving to full songs. Upgrade to HARD once you consistently hit 95% on EASY.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="coach-card" onclick="toggleCoach(this)">
+      <div class="coach-header">
+        <div class="coach-num">02</div>
+        <div><div class="coach-title">QUIET COUNT</div><div class="coach-sub">Internal timing — click drops out mid-session · Press [COACH] → F2</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="coach-body">
+        <div class="coach-body-inner">
+          <div>
+            <div class="section-title">Recommended Settings</div>
+            <div class="data-block">
+              <div class="data-row"><span class="data-label">Measures</span><span class="data-value">4 measures</span></div>
+              <div class="data-row"><span class="data-label">Quiet</span><span class="data-value">2 (half quiet, half click)</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">Why this matters</div>
+            <div class="note-box"><p>The most underused tool on the TD-17. Click plays for the first half, drops out for the second, then comes back — you find out immediately if you drifted. Playing with a bass player or backing track requires this internal clock. More valuable long-term than Time Check.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="coach-card" onclick="toggleCoach(this)">
+      <div class="coach-header">
+        <div class="coach-num">03</div>
+        <div><div class="coach-title">WARM UPS</div><div class="coach-sub">Structured session — 3 progressive steps · Press [COACH] → F3</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="coach-body">
+        <div class="coach-body-inner">
+          <div>
+            <div class="section-title">Recommended Settings</div>
+            <div class="data-block">
+              <div class="data-row"><span class="data-label">Duration</span><span class="data-value">10 MINS</span></div>
+              <div class="data-row"><span class="data-label">Grade</span><span class="data-value">EASY</span></div>
+              <div class="data-row"><span class="data-label">Max Tempo</span><span class="data-value">180 BPM</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="section-title">The three steps</div>
+            <div class="note-box"><p><strong>Step 1 — Change-Up:</strong> Note values shift every 2 measures from half notes down to sixteenths and back. Warms up limb independence.<br><br><strong>Step 2 — Auto Up/Down:</strong> Tempo gradually increases then decreases. Exposes tempo inconsistencies without you controlling it.<br><br><strong>Step 3 — Time Check:</strong> Final accuracy evaluation. Run this before every Bluetooth jam session.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Recording — Capture Your Practice</div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="section-title">Record your performance to SD card as WAV — up to 60 minutes</div>
+    <div class="card-grid cols2" style="margin-bottom:12px;">
+      <div>
+        <div class="section-title">Drums only</div>
+        <ol class="step-list">
+          <li>Press <strong>[●] REC</strong> button</li>
+          <li>Turn dial → select <strong>DRUMS</strong></li>
+          <li>Press <strong>[►/■]</strong> to start</li>
+          <li>Press <strong>[►/■]</strong> again to stop</li>
+          <li>Press <strong>[F2] PREVIEW</strong> to listen back</li>
+          <li>Press <strong>[F3] EXPORT</strong> to save to SD card</li>
+        </ol>
+      </div>
+      <div>
+        <div class="section-title">Drums + Bluetooth backing track</div>
+        <ol class="step-list">
+          <li>Start Bluetooth music on mobile device</li>
+          <li>Press <strong>[●] REC</strong> button</li>
+          <li>Turn dial → select <strong>ALL</strong></li>
+          <li>Press <strong>[►/■]</strong> to start — both record together</li>
+          <li>Press <strong>[►/■]</strong> to stop</li>
+          <li>Press <strong>[F3] EXPORT</strong> to save</li>
+        </ol>
+      </div>
+    </div>
+    <div class="note-box yellow"><p><strong>File format:</strong> WAV, 44.1kHz, 16-bit · Saved to /REC folder on SD card · Max 60 min with SD card (3 min without). Listening back reveals timing and dynamics issues you cannot hear while playing.</p></div>
+  </div>
+
+  <div class="hw-note" style="margin-bottom:48px;">
+    <div class="hw-icon">💡</div>
+    <div>
+      <div class="hw-title purple">Session Workflow</div>
+      <div class="hw-text">
+        <strong>1.</strong> Power on → confirm Auto Off is disabled &nbsp;·&nbsp;
+        <strong>2.</strong> Connect Bluetooth &nbsp;·&nbsp;
+        <strong>3.</strong> Run Warm Ups (10 min) &nbsp;·&nbsp;
+        <strong>4.</strong> Load kit from SD card &nbsp;·&nbsp;
+        <strong>5.</strong> Set Ambience and Pad EQ while playing one familiar song &nbsp;·&nbsp;
+        <strong>6.</strong> Record a full run-through for playback review
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">SD Card — Quick Reference</div>
+  <div class="card-grid cols2" style="margin-bottom:48px;">
+    <div class="card-sm">
+      <div class="section-title">Load a third-party kit backup</div>
+      <ol class="step-list">
+        <li>Insert SD card</li>
+        <li>Press <strong>[OTHER]</strong></li>
+        <li>Select <strong>SAVE/LOAD</strong></li>
+        <li>Press <strong>[F2] LOAD</strong></li>
+        <li>Select kit from SD card list</li>
+        <li>Press <strong>[F3] EXECUTE → [ENTER]</strong></li>
+      </ol>
+    </div>
+    <div class="card-sm">
+      <div class="section-title">Back up your customized kit</div>
+      <ol class="step-list">
+        <li>Insert SD card</li>
+        <li>Press <strong>[OTHER]</strong></li>
+        <li>Select <strong>SAVE/LOAD</strong></li>
+        <li>Press <strong>[F1] SAVE</strong></li>
+        <li>Select destination slot</li>
+        <li>Press <strong>[F3] EXECUTE → [ENTER]</strong></li>
+      </ol>
+      <div class="note-box" style="margin-top:10px;"><p>Always back up after dialing in IEM compensation and pad EQ. Third-party kits overwrite your settings when reloaded.</p></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">Drums Guide · Roland TD-17KV · KZ ZS10 Pro · Third-party rock kits via SD</div>
+    <div class="footer-text">Click any Coach Mode card to expand</div>
+  </div>
+
+</div>
+<script>
+  function toggleCoach(card) { card.classList.toggle('open'); }
+</script>
+</body>
+</html>
